@@ -13,22 +13,40 @@ set -e
 
 # Version 0.0.1	08/07/15	Initial version
 
+OutpurDir="$PWD"
+
+# parse the options
+while getopts 'o:' opt ; do
+  case $opt in
+    o) OutputDir=$OPTARG ;;
+  esac
+done
+# skip over the processed options
+shift $((OPTIND-1))
+
 # check for mandatory positional parameters
 if [ $# -lt 1 ]; then
   echo "
 Usage: $0 <Path to multi-segment Influenza fasta file>
+	Options -o Path to Output Directory (default: use current directory)
 "
   exit 1
 fi
 
-awk 'BEGIN {RS=">"} /Segment:1/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg1.fasta &
-awk 'BEGIN {RS=">"} /Segment:2/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg2.fasta &
-awk 'BEGIN {RS=">"} /Segment:3/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg3.fasta &
-awk 'BEGIN {RS=">"} /Segment:4/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg4.fasta &
-awk 'BEGIN {RS=">"} /Segment:5/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg5.fasta &
-awk 'BEGIN {RS=">"} /Segment:6/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg6.fasta &
-awk 'BEGIN {RS=">"} /Segment:7/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg7.fasta &
-awk 'BEGIN {RS=">"} /Segment:8/ {print ">"$0}' $1 > InfluenzaDB/Influenza_seg8.fasta &
+Input="$(readlink -f "$1")"
+cd "$OutputDir"
+
+mkdir InfluenzaDB
+
+echo "Splitting database according to genome segment"
+awk 'BEGIN {RS=">"} /Segment:1/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg1.fasta &
+awk 'BEGIN {RS=">"} /Segment:2/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg2.fasta &
+awk 'BEGIN {RS=">"} /Segment:3/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg3.fasta &
+awk 'BEGIN {RS=">"} /Segment:4/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg4.fasta &
+awk 'BEGIN {RS=">"} /Segment:5/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg5.fasta &
+awk 'BEGIN {RS=">"} /Segment:6/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg6.fasta &
+awk 'BEGIN {RS=">"} /Segment:7/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg7.fasta &
+awk 'BEGIN {RS=">"} /Segment:8/ {print ">"$0}' $Input > InfluenzaDB/Influenza_seg8.fasta &
 wait
 
 for file in InfluenzaDB/*.fasta
