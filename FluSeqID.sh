@@ -12,7 +12,6 @@ set -e
 	# picard
 	# GATK 
 	# BLAST+ 
-	# IterMap.sh (available at https://github.com/ellisrichardj/csu_scripts)
 	# vcf2consensus.pl (available at https://github.com/ellisrichardj/csu_scripts)
 
 # Ensure that each of these are in PATH or symbolic links are in a folder that is in your PATH
