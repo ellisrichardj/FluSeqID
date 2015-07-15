@@ -223,12 +223,12 @@ echo -e "Completed processing $complete"  >> "$samplename"_IterMap"$iter".log
 # Clean up intermediate files
 cd ..
 mkdir "$samplename"_FinalResults
-mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_MappingStats.txt > "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_MappingStats.txt
-mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4.vcf > "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4.vcf
-mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_consensus.fa > "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_consensus.fa
-mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter3_consensus.fa > "$samplename"_FinalResults/"$samplename"-"$reffile"-iter3_consensus.fa
-mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam > "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam
-mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam.bai > "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam.bai
+mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_MappingStats.txt  "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_MappingStats.txt
+mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4.vcf  "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4.vcf
+mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_consensus.fa  "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_consensus.fa
+mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter3_consensus.fa  "$samplename"_FinalResults/"$samplename"-"$reffile"-iter3_consensus.fa
+mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam  "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam
+mv "$samplename"_IterMap"$iter"/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam.bai  "$samplename"_FinalResults/"$samplename"-"$reffile"-iter4_clean_mapOnly.bam.bai
 
 rm -rf "$samplename"_IterMap"$iter"
 rm "$samplename"_"$hostname"_map_sorted.bam
