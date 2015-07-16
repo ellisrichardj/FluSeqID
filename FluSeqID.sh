@@ -22,6 +22,7 @@ set -e
 # Version 0.2.3 13/07/15	Clarify usage statement; retain original filename for host reference when generating a
 #							new index; remove intermediate files from IterMap process
 # Version 0.3.0 15/07/15	Major change to embed iterative mapping into this single script
+# Version 0.3.1 16/05/14	Minor bug fixes
 
 # set defaults for the options
 KVALUE=101
@@ -135,19 +136,17 @@ cat *_match.fas > top_matches.fa
 
 rfile="$(readlink -f top_matches.fa)"
 
-	ref=$(basename "$Ref")
+	ref=$(basename "$rfile")
 	refname=${ref%%_*}
 	reffile=${ref%%.*}
-
-mkdir "$samplename"_IterMap"$iter"
-cd "$samplename"_IterMap"$iter"
 
 iter=4
 count=1
 
-if [ $minexpcov -lt 5 ]; then depth=1; else depth=10; fi
+mkdir "$samplename"_IterMap"$iter"
+cd "$samplename"_IterMap"$iter"
 
-threads=$(grep -c ^processor /proc/cpuinfo)
+
 
 # Log commands that are run
 echo -e "$now\n\tItermap v0.3.0 running with $threads cores\n\tThe following commands were run:\n"  > "$samplename"_IterMap"$iter".log
@@ -192,7 +191,7 @@ if [ $count == $iter ]; then
 
 	LogRun samtools mpileup -L 10000 -Q1 -AEupf "$rfile" "$samplename"-"$reffile"-iter"$count"_clean_mapOnly.bam |
 	 bcftools call -c - > "$samplename"-"$reffile"-iter"$count".vcf
-	LogRun vcf2consensus.pl consensus -d "$minexpcov" -Q "$minQ" -f "$rfile" "$samplename"-"$reffile"-iter"$count".vcf |
+	LogRun vcf2consensus.pl consensus -f "$rfile" "$samplename"-"$reffile"-iter"$count".vcf |
 	 sed '/^>/ s/-iter[0-9]//;/^>/ s/$/'-iter"$count"'/' - > "$samplename"-"$reffile"-iter"$count"_consensus.fa
 
 	# mapping statistics
@@ -203,7 +202,7 @@ else
 
 	LogRun samtools mpileup -L 10000 -Q1 -AEupf "$rfile" "$samplename"-"$reffile"-iter"$count"_realign.bam |
 	 bcftools call -c - > "$samplename"-"$reffile"-iter"$count".vcf
-	LogRun vcf2consensus.pl consensus -d "$minexpcov" -Q "$minQ" -f "$rfile" "$samplename"-"$reffile"-iter"$count".vcf |
+	LogRun vcf2consensus.pl consensus -f "$rfile" "$samplename"-"$reffile"-iter"$count".vcf |
 	 sed '/^>/ s/-iter[0-9]//;/^>/ s/$/'-iter"$count"'/' - > "$samplename"-"$reffile"-iter"$count"_consensus.fa
 
 	# mapping statistics
