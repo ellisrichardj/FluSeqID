@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Simple script by ellisrichardj to separate downloaded Influenza genomes one fasta file for each segment
+# Simple script by ellisrichardj to separate downloaded Influenza genomes into one fasta file for each segment
 # This will correctly format the database for use in the FluSeqID pipeline
 
 # The multi-segment fasta file can be downloaded from the Influenza Research Database (http://www.fludb.org)
@@ -12,6 +12,7 @@ set -e
 #	BLAST+
 
 # Version 0.0.1	08/07/15	Initial version
+# Version 0.0.2 03/08/15	Indicates location of database when completed
 
 OutpurDir="$PWD"
 
@@ -56,4 +57,9 @@ for file in InfluenzaDB/*.fasta
 		makeblastdb -in InfluenzaDB/"$segname".fasta -parse_seqids -dbtype nucl &
 	done
 wait
+cd .. 
+
+Output="dirname $(readlink -f InfluenzaDB/Influenza_seg1.fasta)"
+echo "A correctly formatted database for FluSeqID is now here: "Output""
+
 exit
