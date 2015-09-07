@@ -97,8 +97,18 @@ bwa mem -t "$threads" "$PathToHOST" "$LEFT" "$RIGHT" | samtools view -Su - | sam
 # Extract sequence reads that do not map to the host genome
 samtools view -b -f 4 "$OutputDir"/"$samplename"_"$hostname"_map_sorted.bam > "$OutputDir"/"$samplename"_nonHost.bam
 
+# Subsample bam if necessary
+NonHostReads=$(samtools view -c "$OutputDir"/"$samplename"_nonHost.bam)
+MaxReads=800000
+if [ $NonHostReads -gt $MaxReads ]
+	then 	Sub="$(( 4321 + ($MaxReads / $NonHostReads) ))"
+			samtools view -s 54321.5 "$OutputDir"/"$samplename"_nonHost.bam > "$OutputDir"/"$samplename"_nonHost_subsample.bam
+			VelInBam="$OutputDir"/"$samplename"_nonHost_subsample.bam
+	else 	VelInBam="$OutputDir"/"$samplename"_nonHost.bam 
+fi
+
 # Denovo assembly of non-host reads
-velveth "$OutputDir"/"$samplename"_nonHost_"$KVALUE" "$KVALUE" -shortPaired -bam "$OutputDir"/"$samplename"_nonHost.bam
+velveth "$OutputDir"/"$samplename"_nonHost_"$KVALUE" "$KVALUE" -shortPaired -bam "$VelInBam"
 velvetg "$OutputDir"/"$samplename"_nonHost_"$KVALUE" -exp_cov auto -cov_cutoff "$CUTOFF" -ins_length 300 -clean yes -unused_reads yes
 
 # Now run Blast of output contigs against Influenza database of choice.
