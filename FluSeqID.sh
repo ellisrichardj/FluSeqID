@@ -22,10 +22,11 @@ set -e
 # Version 0.2.3 13/07/15	Clarify usage statement; retain original filename for host reference when generating a
 #							new index; remove intermediate files from IterMap process
 # Version 0.3.0 15/07/15	Major change to embed iterative mapping into this single script
-# Version 0.3.1 16/05/14	Minor bug fixes
+# Version 0.3.1 16/07/15	Minor bug fixes
+# Version 0.3.2	07/09/15	Subsample bam if required to help with memory usage in velvet; changed default k-mer value
 
 # set defaults for the options
-KVALUE=101
+KVALUE=71
 CUTOFF=auto
 Blast_e_value=0.0001
 
@@ -53,7 +54,7 @@ Usage: $0 [options]
 "
   echo "Reference database should be a directory containing a separate fasta file for each virus segment
 "
-  echo "Options: De Novo assembly: -k Velvet kmervalue (default = 101)
+  echo "Options: De Novo assembly: -k Velvet kmervalue (default = 71)
 		 	-c Velvet cov_cutoff (default = auto)
 "
   echo "Options: Blast Output: -e Blast e value (default = 0.0001)
