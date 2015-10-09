@@ -1,5 +1,9 @@
 # FluSeqID
-This collection of short scripts forms a pipeline for the detection and extraction of accurate whole genome consensus of Influenza virus from clinical samples or primary passages.  The pipeline has been developed for use with Illumina paired-end data.  The following steps are run automatically:
+This collection of short scripts forms a pipeline for the detection and extraction of accurate whole genome consensus of Influenza virus from clinical samples, tissue culture or passaged material.  The pipeline has been developed for use with Illumina paired-end data.  
+
+A key prerequisite for this is a properly formatted blast database.  Essentilly, a separate batabase for each of the eight genome segments is required.  There is a script to do this automatically following the download of whole genomes from http://www.fludb.org
+
+In the main script the following steps are run automatically:
 
 1.	Map raw sequence data to host genome (BWA)
 2.	Extract reads that do not map to the host (Samtools)
