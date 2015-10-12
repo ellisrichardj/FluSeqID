@@ -1,7 +1,7 @@
 # FluSeqID
 This collection of short scripts forms a pipeline for the detection and extraction of accurate whole genome consensus of Influenza virus from clinical samples, tissue culture or passaged material.  The pipeline has been developed for use with Illumina paired-end data.  
 
-A key prerequisite for this is a properly formatted blast database.  Essentilly, a separate batabase for each of the eight genome segments is required.  There is a script to do this automatically following the download of whole genomes from http://www.fludb.org
+A key prerequisite for this is a properly formatted blast database.  Essentially, a separate database for each of the eight genome segments is required.  There is a script to do this automatically following the download of whole influenza genomes from http://www.fludb.org
 
 In the main script the following steps are run automatically:
 
