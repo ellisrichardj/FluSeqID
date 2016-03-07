@@ -16,7 +16,7 @@ set -e
 
 # Ensure that each of these are in PATH or symbolic links are in a folder that is in your PATH
 
-# Version 0.2.0	01/06/05	Initial version (FluSearch) adapted from Sherlock version 0.2.0
+# Version 0.2.0	01/06/15	Initial version (FluSearch) adapted from Sherlock version 0.2.0
 # Version 0.2.1 22/06/15	Minor edits and new name
 # Version 0.2.2 07/08/15	Makes use of pre-formated BLAST db - see FormatFlu_db.sh
 # Version 0.2.3 13/07/15	Clarify usage statement; retain original filename for host reference when generating a
@@ -24,6 +24,7 @@ set -e
 # Version 0.3.0 15/07/15	Major change to embed iterative mapping into this single script
 # Version 0.3.1 16/07/15	Minor bug fixes
 # Version 0.3.2	07/09/15	Subsample bam if required to help with memory usage in velvet; changed default k-mer value
+# Version 0.3.3 06/03/16	Corrected calculation for subsampling
 
 # set defaults for the options
 KVALUE=71
@@ -102,8 +103,8 @@ samtools view -b -f 4 "$OutputDir"/"$samplename"_"$hostname"_map_sorted.bam > "$
 NonHostReads=$(samtools view -c "$OutputDir"/"$samplename"_nonHost.bam)
 MaxReads=800000
 if [ $NonHostReads -gt $MaxReads ]
-	then 	Sub="$(( 4321 + ($MaxReads / $NonHostReads) ))"
-			samtools view -s 54321.5 "$OutputDir"/"$samplename"_nonHost.bam > "$OutputDir"/"$samplename"_nonHost_subsample.bam
+	then 	Sub=$(echo "scale=1;  321+$MaxReads/$NonHostReads" | bc)
+			samtools view -bs "$Sub" "$OutputDir"/"$samplename"_nonHost.bam > "$OutputDir"/"$samplename"_nonHost_subsample.bam
 			VelInBam="$OutputDir"/"$samplename"_nonHost_subsample.bam
 	else 	VelInBam="$OutputDir"/"$samplename"_nonHost.bam 
 fi
