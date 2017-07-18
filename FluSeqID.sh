@@ -7,9 +7,9 @@ set -e
 
 # Prerequisites:
 	# bwa - 0.7.5a or above
-	# samtools 
+	# samtools (v 1.x) 
 	# velvet (must be compiled for multithreading and use of k-mers of at least 101)
-	# picard
+	# picard-tools
 	# GATK 
 	# BLAST+ 
 	# vcf2consensus.pl (available at https://github.com/ellisrichardj/csu_scripts)
@@ -25,9 +25,11 @@ set -e
 # Version 0.3.1 16/07/15	Minor bug fixes
 # Version 0.3.2	07/09/15	Subsample bam if required to help with memory usage in velvet; changed default k-mer value
 # Version 0.3.3 06/03/16	Corrected calculation for subsampling
+# Version 0.3.4 08/11/16	Update samtools commands for v1.3 (use -o for output)
+# Version 0.3.5 18/07/17	Reduced default k-mer value
 
 # set defaults for the options
-KVALUE=71
+KVALUE=51
 CUTOFF=auto
 Blast_e_value=0.0001
 
@@ -94,17 +96,17 @@ fi
 
 # Map raw data to host genome
 echo "Mapping raw reads to host reference genome"
-bwa mem -t "$threads" "$PathToHOST" "$LEFT" "$RIGHT" | samtools view -Su - | samtools sort - "$OutputDir"/"$samplename"_"$hostname"_map_sorted
+bwa mem -t "$threads" "$PathToHOST" "$LEFT" "$RIGHT" | samtools view -Su - | samtools sort -o "$OutputDir"/"$samplename"_"$hostname"_map_sorted
 
 # Extract sequence reads that do not map to the host genome
-samtools view -b -f 4 "$OutputDir"/"$samplename"_"$hostname"_map_sorted.bam > "$OutputDir"/"$samplename"_nonHost.bam
+samtools view -b -f 4 "$OutputDir"/"$samplename"_"$hostname"_map_sorted.bam -o "$OutputDir"/"$samplename"_nonHost.bam
 
 # Subsample bam if necessary
 NonHostReads=$(samtools view -c "$OutputDir"/"$samplename"_nonHost.bam)
 MaxReads=800000
 if [ $NonHostReads -gt $MaxReads ]
 	then 	Sub=$(echo "scale=1;  321+$MaxReads/$NonHostReads" | bc)
-			samtools view -bs "$Sub" "$OutputDir"/"$samplename"_nonHost.bam > "$OutputDir"/"$samplename"_nonHost_subsample.bam
+			samtools view -bs "$Sub" "$OutputDir"/"$samplename"_nonHost.bam -o "$OutputDir"/"$samplename"_nonHost_subsample.bam
 			VelInBam="$OutputDir"/"$samplename"_nonHost_subsample.bam
 	else 	VelInBam="$OutputDir"/"$samplename"_nonHost.bam 
 fi
@@ -187,7 +189,7 @@ eval "$@"
 	LogRun picard-tools CreateSequenceDictionary R="$rfile" O=${rfile%%.*}.dict
 	LogRun bwa mem -T10 -t "$threads" -k "$mem" -B "$mmpen" -O "$gappen" -R '"@RG\tID:"$samplename"\tSM:"$samplename"\tLB:"$samplename""' "$rfile" "$LEFT" "$RIGHT" |
 	 samtools view -Su - |
-	 samtools sort - "$samplename"-"$reffile"-iter"$count"_map_sorted
+	 samtools sort -o "$samplename"-"$reffile"-iter"$count"_map_sorted
 	samtools index "$samplename"-"$reffile"-iter"$count"_map_sorted.bam
 	LogRun GenomeAnalysisTK.jar -T RealignerTargetCreator -nt "$threads" -R "$rfile" -I "$samplename"-"$reffile"-iter"$count"_map_sorted.bam -o indel"$count".list
 	LogRun GenomeAnalysisTK.jar -T IndelRealigner -R "$rfile" -I "$samplename"-"$reffile"-iter"$count"_map_sorted.bam -targetIntervals indel"$count".list -maxReads 50000 -o "$samplename"-"$reffile"-iter"$count"_realign.bam
